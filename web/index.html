@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffdf60">
 <meta name="description" content="Side Challenge 3000 - jocuri random, timer, echipe si castigatori.">
-<meta name="app-build" content="fix-2026-11-24-score">
+<meta name="app-build" content="bracket-2026-11-25">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <title>SIDE CHALLENGE 3000 !!</title>
@@ -1131,6 +1131,717 @@ button:disabled {
 .score-row:first-child {
     background: #fff8d9;
 }
+:root {
+    --hot: oklch(0.6 0.22 22);
+    --board: oklch(0.86 0.06 235);
+}
+.cup-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    margin-bottom: 20px;
+}
+.cup-bar .field-name {
+    margin: 0;
+}
+.cup-bar .field {
+    width: 86px;
+}
+.bracket {
+    display: grid;
+    grid-template-columns: repeat(var(--rounds),minmax(190px,1fr));
+    gap: 22px;
+    overflow-x: auto;
+    padding: 14px 8px 10px 2px;
+}
+.b-round {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.b-title {
+    font: 900 13px 'Courier New',monospace;
+    text-align: center;
+}
+.b-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 16px;
+}
+.b-match {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    background: #fff;
+    border: var(--border);
+    box-shadow: 4px 4px 0 var(--ink);
+}
+.b-match.live {
+    background: var(--yellow);
+}
+.b-match.bye {
+    border-style: dashed;
+    box-shadow: none;
+    opacity: .6;
+}
+.b-match .small-stamp {
+    position: absolute;
+    top: -12px;
+    right: -8px;
+}
+.b-team {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 36px;
+    padding: 6px 8px;
+    font-weight: 900;
+    text-align: left;
+    background: #fffdf7;
+    border-left: 8px solid var(--c);
+    overflow-wrap: anywhere;
+}
+.b-team b {
+    font: 900 16px 'Courier New',monospace;
+}
+.b-team.win {
+    background: var(--green);
+}
+.b-team.out {
+    opacity: .45;
+    text-decoration: line-through;
+}
+.b-team.tbd {
+    color: #77727a;
+    font: 900 12px 'Courier New',monospace;
+    border-left-color: transparent;
+}
+.champ {
+    width: fit-content;
+    margin: 20px auto 0;
+    padding: 12px 22px;
+    font: 900 clamp(24px,3vw,44px)/1.1 Impact,'Arial Black',sans-serif;
+    background: var(--yellow);
+    border: var(--border);
+    box-shadow: var(--sh);
+    transform: rotate(-1deg);
+}
+.match-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 24px;
+    margin-bottom: 20px;
+}
+.match-team {
+    position: relative;
+    min-width: 210px;
+    min-height: 64px;
+    padding: 10px 16px;
+    text-align: left;
+    font-weight: 900;
+    background: #fff;
+    border: var(--border);
+    border-left: 10px solid var(--c);
+    box-shadow: 3px 3px 0 var(--ink);
+    overflow-wrap: anywhere;
+    transition: transform .15s cubic-bezier(.2,.8,.2,1);
+}
+.match-team b {
+    display: block;
+    font: 900 26px 'Courier New',monospace;
+}
+.match-team.on {
+    background: var(--yellow);
+    transform: translateY(-3px) rotate(-1deg);
+}
+.match-team:active {
+    transform: translate(2px,2px);
+}
+.match-team .small-stamp {
+    position: absolute;
+    top: -13px;
+    right: -9px;
+}
+.match-mid {
+    font: 900 13px 'Courier New',monospace;
+    text-align: center;
+}
+.match-mid b {
+    font-size: 24px;
+}
+.console {
+    display: grid;
+    grid-template-columns: minmax(0,1.5fr) minmax(0,1fr);
+    gap: 18px;
+    align-items: start;
+}
+.c-q {
+    margin: 0 0 12px;
+    font: 900 clamp(20px,2.2vw,30px)/1.15 Impact,'Arial Black',sans-serif;
+    overflow-wrap: anywhere;
+}
+.c-bank {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.c-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.c-ans {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 6px 12px 6px 6px;
+    text-align: left;
+    font-weight: 900;
+    background: var(--blue);
+    border: var(--border);
+    box-shadow: 3px 3px 0 var(--ink);
+    overflow-wrap: anywhere;
+    transition: transform .1s ease-out;
+}
+.c-ans .n {
+    display: grid;
+    place-items: center;
+    height: 34px;
+    font: 900 20px Impact,'Arial Black',sans-serif;
+    color: var(--ink);
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+}
+.c-ans .p {
+    font: 900 18px 'Courier New',monospace;
+}
+.c-ans.armed {
+    position: relative;
+    background: var(--pink);
+}
+.c-ans.armed::after {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border: 3px dashed var(--ink);
+    pointer-events: none;
+    animation: armPulse .7s ease-in-out infinite alternate;
+}
+.c-ans.armed .p {
+    font-size: 13px;
+    text-align: right;
+}
+@keyframes armPulse {
+    from { opacity: .2; }
+}
+.c-ans.open {
+    color: #fff;
+    background: var(--ink);
+}
+.c-ans:active:not(.open) {
+    transform: translate(2px,2px);
+}
+.c-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 62vh;
+    margin: 12px 0;
+    padding: 2px 6px 6px 2px;
+    overflow-y: auto;
+}
+.c-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 800;
+    background: #fff;
+    border: 2px solid var(--ink);
+}
+.c-item.used {
+    opacity: .5;
+}
+.c-item.cur {
+    background: var(--yellow);
+    opacity: 1;
+}
+.c-acts {
+    display: flex;
+    flex-shrink: 0;
+    gap: 6px;
+}
+.match-end {
+    margin-top: 18px;
+}
+.feud-name {
+    width: fit-content;
+    margin: 0;
+    padding: .25em .5em;
+    font: 900 3vh/1.1 Impact,'Arial Black',sans-serif;
+    letter-spacing: .5px;
+    background: var(--pink);
+    border: var(--border);
+    box-shadow: 3px 3px 0 var(--ink);
+    transform: rotate(-2deg);
+}
+.feud-bank {
+    display: inline-block;
+    min-width: 2.4em;
+    padding: .06em .35em;
+    font: 900 10vh/1 Impact,'Arial Black',sans-serif;
+    font-variant-numeric: tabular-nums;
+    background: var(--yellow);
+    border: var(--border);
+    box-shadow: var(--sh);
+    transform: rotate(-1.5deg);
+}
+.feud-bank.pop {
+    animation: bankPop .32s cubic-bezier(.34,1.56,.64,1);
+}
+.feud-q {
+    max-width: 44ch;
+    margin: 0 auto;
+    font: 900 clamp(18px,4.2vh,64px)/1.12 Impact,'Arial Black',sans-serif;
+    letter-spacing: .5px;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+}
+.feud-q.long {
+    max-width: 60ch;
+    font-size: clamp(16px,3.2vh,48px);
+}
+.feud-board {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4,1fr);
+    grid-auto-flow: column;
+    gap: 1.4vh 1.6vw;
+    padding: 1.6vh 1.4vw;
+    background: var(--board);
+    border: var(--border);
+    box-shadow: var(--sh);
+}
+.slot {
+    position: relative;
+    min-height: 0;
+    perspective: 900px;
+}
+.slot-in {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+}
+.slot.open .slot-in {
+    transform: rotateX(180deg);
+}
+.slot-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: var(--border);
+    box-shadow: 4px 4px 0 var(--ink);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.slot-front {
+    background: var(--blue);
+}
+.slot-back {
+    transform: rotateX(180deg);
+    justify-content: space-between;
+    color: #fff;
+    background: var(--ink);
+}
+.slot-num {
+    min-width: 2.3em;
+    padding: 0 .3em;
+    font: 900 5.6vh/1.25 Impact,'Arial Black',sans-serif;
+    background: var(--yellow);
+    border: var(--border);
+    transform: rotate(-2deg);
+}
+.slot-txt {
+    flex: 1;
+    min-width: 0;
+    padding: 0 .5em;
+    font: 900 clamp(16px,4.2vh,66px)/1.05 Impact,'Arial Black',sans-serif;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+}
+.slot-pts {
+    align-self: stretch;
+    display: grid;
+    place-items: center;
+    min-width: 2.1em;
+    font: 900 5.4vh Impact,'Arial Black',sans-serif;
+    color: var(--ink);
+    background: var(--yellow);
+    border-left: var(--border);
+}
+.slot.empty {
+    border: 3px dashed rgb(32 32 35 / .35);
+    background: rgb(255 255 255 / .3);
+}
+.slot.new .slot-in {
+    animation: flip .5s cubic-bezier(.3,.7,.3,1) both;
+}
+.slot.new .slot-pts {
+    animation: pop .3s .36s cubic-bezier(.34,1.56,.64,1) both;
+}
+.feud-board.enter .slot {
+    animation: slotIn .26s cubic-bezier(.2,.8,.2,1) both;
+    animation-delay: calc(var(--i) * 35ms);
+}
+.feud-board.shake {
+    animation: shake .32s cubic-bezier(.36,.07,.19,.97);
+}
+.feud-x {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2vw;
+    pointer-events: none;
+}
+.feud-x-box {
+    display: grid;
+    place-items: center;
+    width: 26vh;
+    aspect-ratio: 1;
+    font: 900 22vh/1 Impact,'Arial Black',sans-serif;
+    color: #fff;
+    -webkit-text-stroke: 4px var(--ink);
+    paint-order: stroke fill;
+    background: var(--hot);
+    border: 5px solid var(--ink);
+    box-shadow: 9px 9px 0 var(--ink);
+    opacity: 0;
+    animation: xHit 1.2s cubic-bezier(.2,.8,.2,1) both;
+}
+.feud-x-box:nth-child(2) {
+    animation-delay: .06s;
+}
+.feud-x-box:nth-child(3) {
+    animation-delay: .12s;
+}
+.feud-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4vh 2vw;
+    min-height: 7vh;
+}
+.feud-strikes {
+    display: flex;
+    gap: 10px;
+}
+.strike {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    font: 900 26px Impact,'Arial Black',sans-serif;
+    color: rgb(32 32 35 / .2);
+    background: #fff;
+    border: var(--border);
+}
+.strike.on {
+    color: #fff;
+    background: var(--hot);
+    box-shadow: 3px 3px 0 var(--ink);
+}
+.strike.new {
+    animation: pop .3s .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+.feud-banner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 16px;
+    margin-top: 14px;
+    padding: 10px 18px;
+    font: 900 clamp(18px,2vw,26px)/1.1 Impact,'Arial Black',sans-serif;
+    letter-spacing: .5px;
+    border: var(--border);
+    box-shadow: var(--sh);
+    transform: rotate(-1deg);
+    overflow-wrap: anywhere;
+}
+.feud-banner.win {
+    background: var(--green);
+}
+.feud-banner.steal {
+    background: var(--pink);
+}
+.feud-banner.new {
+    animation: drop .34s cubic-bezier(.2,.8,.2,1) both;
+}
+.proj-body {
+    overflow: hidden;
+}
+.proj {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6vh;
+    height: 100vh;
+    height: 100dvh;
+    padding: 2.4vh 2.6vw;
+    text-align: center;
+    overflow: hidden;
+}
+.proj.enter {
+    animation: projIn .3s cubic-bezier(.2,.8,.2,1) both;
+}
+.proj-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2vw;
+}
+.proj-round {
+    padding: .5vh 1vw;
+    font: 900 2.2vh 'Courier New',monospace;
+    background: #fff;
+    border: var(--border);
+    transform: rotate(1deg);
+}
+.proj-top {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 3vw;
+}
+.proj-team {
+    position: relative;
+    min-width: min(24vw,100%);
+    padding: 1.2vh 1.4vw;
+    text-align: left;
+    background: #fff;
+    border: var(--border);
+    border-left: 1.4vh solid var(--c);
+    box-shadow: var(--sh);
+    overflow-wrap: anywhere;
+    transition: transform .2s cubic-bezier(.2,.8,.2,1);
+}
+.proj-team.a {
+    justify-self: end;
+}
+.proj-team.b {
+    justify-self: start;
+}
+.proj-team span {
+    display: block;
+    font: 900 3.4vh/1.1 Impact,'Arial Black',sans-serif;
+}
+.proj-team b {
+    display: block;
+    font: 900 6vh/1 Impact,'Arial Black',sans-serif;
+}
+.proj-team b.pop {
+    animation: pop .32s cubic-bezier(.34,1.56,.64,1) both;
+}
+.proj-team.on {
+    background: var(--yellow);
+    transform: translateY(-.6vh) rotate(-1deg);
+}
+.proj-team .small-stamp {
+    position: absolute;
+    top: -1.6vh;
+    right: -1vw;
+    font-size: 1.8vh;
+    font-style: normal;
+}
+.proj .feud-banner {
+    margin: 0;
+    padding: 1vh 1.6vw;
+    font-size: 3.6vh;
+}
+.proj .strike {
+    width: 6.4vh;
+    height: 6.4vh;
+    font-size: 4.4vh;
+}
+.proj-bracket .bracket {
+    flex: 1;
+    min-height: 0;
+    gap: 3vw;
+    overflow: hidden;
+}
+.proj-bracket .b-title {
+    font-size: 2.2vh;
+}
+.proj-bracket .b-team {
+    min-height: 5vh;
+}
+.proj-bracket .b-team span,.proj-bracket .b-team b {
+    font-size: 2.8vh;
+}
+.proj-bracket .b-team.tbd {
+    font-size: 2vh;
+}
+.proj-bracket .champ {
+    margin-top: 0;
+    font-size: 6vh;
+}
+.proj.enter .champ {
+    animation: drop .34s .2s cubic-bezier(.2,.8,.2,1) both;
+}
+.proj-vs {
+    align-items: center;
+    justify-content: center;
+    gap: 3vh;
+}
+.proj-vs .feud-name {
+    position: absolute;
+    top: 2.4vh;
+    left: 2.6vw;
+}
+.vs-round {
+    padding: .6vh 1.4vw;
+    font: 900 3vh 'Courier New',monospace;
+    background: var(--blue);
+    border: var(--border);
+    transform: rotate(-1deg);
+}
+.vs-team {
+    max-width: 84vw;
+    padding: 2vh 3vw;
+    font: 900 clamp(32px,10vh,150px)/1 Impact,'Arial Black',sans-serif;
+    background: #fff;
+    border: var(--border);
+    border-left: 2vh solid var(--c);
+    box-shadow: 8px 8px 0 var(--ink);
+    overflow-wrap: anywhere;
+}
+.vs-team.a {
+    transform: rotate(-2deg);
+}
+.vs-team.b {
+    transform: rotate(2deg);
+}
+.vs-x {
+    font: 900 12vh/1 Impact,'Arial Black',sans-serif;
+    color: var(--hot);
+    -webkit-text-stroke: 3px var(--ink);
+    paint-order: stroke fill;
+}
+.proj-vs.enter .vs-team.a {
+    animation: vsA .4s cubic-bezier(.2,.8,.2,1) both;
+}
+.proj-vs.enter .vs-team.b {
+    animation: vsB .4s .08s cubic-bezier(.2,.8,.2,1) both;
+}
+.proj-vs.enter .vs-x {
+    animation: pop .35s .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+.proj-hint {
+    position: fixed;
+    right: 12px;
+    bottom: 10px;
+    font: 900 12px 'Courier New',monospace;
+    pointer-events: none;
+    animation: hintOut .6s 6s both;
+}
+@keyframes hintOut {
+    to { opacity: 0; }
+}
+@keyframes projIn {
+    from { opacity: 0; transform: scale(.97); }
+}
+@keyframes vsA {
+    from { opacity: 0; transform: translateX(-30vw) rotate(-2deg); }
+}
+@keyframes vsB {
+    from { opacity: 0; transform: translateX(30vw) rotate(2deg); }
+}
+@keyframes flip {
+    0% { transform: rotateX(0); }
+    18% { transform: rotateX(-16deg); }
+    78% { transform: rotateX(196deg); }
+    100% { transform: rotateX(180deg); }
+}
+@keyframes pop {
+    from { opacity: 0; transform: scale(.4); }
+}
+@keyframes slotIn {
+    from { opacity: 0; transform: translateY(12px); }
+}
+@keyframes bankPop {
+    40% { transform: rotate(-1.5deg) scale(1.14,.92); }
+    70% { transform: rotate(-1.5deg) scale(.97,1.04); }
+}
+@keyframes shake {
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+@keyframes xHit {
+    0% { opacity: 0; transform: scale(2.2) rotate(-14deg); }
+    16% { opacity: 1; transform: scale(.9) rotate(3deg); }
+    24% { transform: scale(1.06) rotate(-2deg); }
+    30%, 82% { opacity: 1; transform: scale(1) rotate(-3deg); }
+    100% { opacity: 0; transform: scale(.85) rotate(-3deg); }
+}
+@keyframes drop {
+    0% { opacity: 0; transform: translateY(-30px) rotate(-1deg) scale(.95,1.08); }
+    70% { opacity: 1; transform: translateY(0) rotate(-1deg) scale(1.05,.95); }
+    100% { transform: rotate(-1deg); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+}
+@keyframes xFade {
+    0%, 100% { opacity: 0; }
+    15%, 80% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .slot.new .slot-in, .feud-board.shake, .feud-bank.pop, .proj.enter {
+        animation: none;
+    }
+    .slot.new .slot-back, .slot.new .slot-pts, .feud-board.enter .slot, .strike.new, .feud-banner.new, .proj-team b.pop, .proj.enter .champ, .proj-vs.enter .vs-team.a, .proj-vs.enter .vs-team.b, .proj-vs.enter .vs-x {
+        animation: fadeIn .2s both;
+    }
+    .feud-x-box {
+        animation: xFade 1s both;
+    }
+    .c-ans.armed::after {
+        animation: none;
+    }
+    .match-team, .proj-team, .c-ans {
+        transition: none;
+    }
+}
+@media (max-width:900px) {
+    .console {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 </head>
 <body>
@@ -1154,8 +1865,10 @@ button:disabled {
         { id: 'pdf-10', name: 'Memory test', category: 'Gandire rapida', difficulty: 'easy', duration: 60, description: 'Arata 8 cuvinte timp de 5 secunde. Apoi echipa trebuie sa isi aminteasca cat mai multe.', active: true }
     ];
     const echipe = [{ id: 'demo-1', name: 'Echipa CARTOF', members: ['Ana', 'Vlad', 'Teo'], color: 'banana', score: 0 }, { id: 'demo-2', name: 'Echipa FULGER', members: ['Mara', 'Paul', 'Daria'], color: 'blue', score: 0 }, { id: 'demo-3', name: 'Echipa PANDA', members: ['Alex', 'Ioana', 'Radu'], color: 'pink', score: 0 }];
-    const base = () => ({ version: 4, challenges: structuredCloneSafe(jocuri), teams: structuredCloneSafe(echipe), used: [], round: null, history: [], schedule: { mode: 'manual', fixed: 15, min: 10, max: 30 }, nextAutoAt: null, sound: true, points: 1, reward: 'Double points', lastChallengeId: null });
-    let st = loadState(), pg = 'play', mod = null, tm = null, secOld = -1, audio = null;
+    const intrebari = Array.from({ length: 8 }, (_, i) => ({ id: 'bere-' + (i + 1), text: 'Ce bere beau EESTECeri cel mai mult?', answers: parseAnswers('Ursus 27\nCiucas 21\nTimisoreana 16\nBirra 12\nBergenbier 9\nHeineken 7\nSilva 5\nTuborg 3') }));
+    const base = () => ({ version: 4, challenges: structuredCloneSafe(jocuri), teams: structuredCloneSafe(echipe), used: [], round: null, history: [], schedule: { mode: 'manual', fixed: 15, min: 10, max: 30 }, nextAutoAt: null, sound: true, points: 1, reward: 'Double points', lastChallengeId: null, questions: structuredCloneSafe(intrebari), feud: newFeud(null), cup: newCup() });
+    const PROJ = location.hash === '#proiector';
+    let st = loadState(), pg = PROJ || st.cup.match ? 'feud' : 'play', mod = null, tm = null, secOld = -1, audio = null, seen = null, projKey = '', armed = null;
     const el = (id) => document.getElementById(id);
     function structuredCloneSafe(v) { return JSON.parse(JSON.stringify(v)); }
     function uuid() { return (globalThis.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2); }
@@ -1171,6 +1884,14 @@ button:disabled {
     function scoruri(s) {
         s.points = nrPct(s.points);
         s.teams.forEach(t => t.score = nrScor(t.score));
+        if (!Array.isArray(s.questions)) s.questions = structuredCloneSafe(intrebari);
+        s.questions = s.questions.filter(q => q && typeof q.text === 'string' && Array.isArray(q.answers) && q.answers.every(a => a && typeof a.text === 'string'));
+        s.questions.forEach(q => q.answers.forEach(a => a.points = nrScor(a.points)));
+        const f = s.feud && typeof s.feud === 'object' ? s.feud : {};
+        s.feud = { ...newFeud(null), ...f, open: Array.isArray(f.open) ? f.open.filter(Number.isInteger) : [], bank: nrScor(f.bank), strikes: nrScor(f.strikes), x: nrScor(f.x) };
+        if (s.feud.q && !s.questions.some(q => q.id === s.feud.q)) s.feud = newFeud(null, s.feud.turn);
+        const c = s.cup && typeof s.cup === 'object' ? s.cup : {};
+        s.cup = { ...newCup(), ...c, rounds: Array.isArray(c.rounds) ? c.rounds.filter(Array.isArray).map(r => r.filter(m => m && typeof m === 'object').map(m => ({ winner: null, ...m, qs: Array.isArray(m.qs) ? m.qs : [], res: m.res && typeof m.res === 'object' ? m.res : {} }))) : [], used: Array.isArray(c.used) ? c.used : [], skip: Array.isArray(c.skip) ? c.skip : [], show: c.show === 'bracket' ? 'bracket' : 'board', per: Math.max(1, Math.min(10, Math.floor(Number(c.per)) || 3)), confirm: c.confirm !== false };
         return s;
     }
     function pctRunda() {
@@ -1202,33 +1923,39 @@ button:disabled {
         return a[0] % n;
     } return Math.floor(Math.random() * n); }
     function notify(msg) { el('toast-root').innerHTML = '<div class="toast" role="status">' + escapeHtml(msg) + '</div>'; clearTimeout(tm); tm = setTimeout(() => { el('toast-root').innerHTML = ''; }, 3200); }
-    function playSound() { if (!st.sound)
+    function beep(notes) { if (!st.sound)
         return; try {
         const ac = audio || (audio = new (window.AudioContext || window.webkitAudioContext)());
         if (ac.state === 'suspended')
             ac.resume();
         const start = ac.currentTime;
-        for (let i = 0; i < 3; i++) {
+        notes.forEach(([f, at, len, vol]) => {
             const o = ac.createOscillator(), g = ac.createGain();
             o.type = 'square';
-            o.frequency.value = [740, 890, 740][i];
+            o.frequency.value = f;
             o.connect(g);
             g.connect(ac.destination);
-            g.gain.setValueAtTime(.0001, start + i * .2);
-            g.gain.exponentialRampToValueAtTime(.065, start + i * .2 + .015);
-            g.gain.exponentialRampToValueAtTime(.0001, start + i * .2 + .15);
-            o.start(start + i * .2);
-            o.stop(start + i * .2 + .16);
-        }
+            g.gain.setValueAtTime(.0001, start + at);
+            g.gain.exponentialRampToValueAtTime(vol, start + at + .015);
+            g.gain.exponentialRampToValueAtTime(.0001, start + at + len);
+            o.start(start + at);
+            o.stop(start + at + len + .01);
+        });
     }
     catch { } }
+    function playSound() { beep([[740, 0, .15, .065], [890, .2, .15, .065], [740, .4, .15, .065]]); }
+    const sfx = Object.fromEntries(['correct', 'wrong', 'duplicate'].map(n => [n, new Audio('feud-' + n + '.mp3')]));
+    function sound(n) { if (!st.sound) return; const a = sfx[n]; a.currentTime = 0; a.play().catch(() => { }); }
     function durationHuman(ms) { const n = Math.ceil(Math.max(0, ms) / 1000); return String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0'); }
     function dateLabel(ts) { return new Date(ts).toLocaleString('ro-RO', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
     function difficultyChip(c) { return '<span class="chip ' + (c.difficulty === 'hard' ? 'hard' : 'easy') + '">' + (c.difficulty === 'hard' ? 'GREU / ROSU' : 'USOR / VERDE') + '</span>'; }
     function categoryChip(c) { return '<span class="chip cat">' + escapeHtml(c.category) + '</span>'; }
     function timeChip(c) { return '<span class="chip time">' + Number(c.duration) + ' SEC</span>'; }
-    function head() { const nr = st.challenges.filter(c => c.active).length; return `<header class="topbar"><div class="brand"><div class="mark">SC!</div><div><h1 class="brand-title">SIDE CHALLENGE <span class="dot">3000!!</span></h1><div class="brand-sub">aplicatia aia cu challenge-uri random. da, asta.</div></div></div><div class="top-actions"><span class="status-pill">● LOCAL + AUTO SAVE</span><button type="button" class="mini-btn" data-action="fullscreen" title="Afiseaza pe tot ecranul">[ ] FULL</button></div></header><nav class="nav" aria-label="Meniu">${[['play', '▶ JOACA ACUM'], ['challenges', '✎ CHALLENGE-URI'], ['teams', '♣ ECHIPE'], ['scores', '★ CLASAMENT'], ['history', '★ ISTORIC'], ['settings', '⚙ SETARI']].map(([v, n]) => `<button class="nav-btn ${pg === v ? 'active' : ''}" data-action="nav" data-view="${v}">${n}</button>`).join('')}</nav>`; }
-    function render() { el('app').innerHTML = '<div class="app">' + head() + ({ play: renderPlay, challenges: renderChallenges, teams: renderTeams, scores: renderScores, history: renderHistory, settings: renderSettings }[pg] || renderPlay)() + `<footer class="footer">FACUT CU 3 PIXELI SI MULTA INCREDERE &nbsp; | &nbsp; ${st.challenges.length} CHALLENGE-URI (${st.challenges.filter(c => c.active).length} active) &nbsp; | &nbsp; datele se salveaza pe aparatul asta.</footer></div>`; renderModal(); updateLiveTime(); }
+    function head() { const nr = st.challenges.filter(c => c.active).length; return `<header class="topbar"><div class="brand"><div class="mark">SC!</div><div><h1 class="brand-title">SIDE CHALLENGE <span class="dot">3000!!</span></h1><div class="brand-sub">aplicatia aia cu challenge-uri random. da, asta.</div></div></div><div class="top-actions"><span class="status-pill">● LOCAL + AUTO SAVE</span><button type="button" class="mini-btn" data-action="fullscreen" title="Afiseaza pe tot ecranul">[ ] FULL</button></div></header><nav class="nav" aria-label="Meniu">${[['play', '▶ JOACA ACUM'], ['feud', '♦ CE SPUN EESTEC-ERII?'], ['questions', '? INTREBARI'], ['challenges', '✎ CHALLENGE-URI'], ['teams', '♣ ECHIPE'], ['scores', '★ CLASAMENT'], ['history', '★ ISTORIC'], ['settings', '⚙ SETARI']].map(([v, n]) => `<button class="nav-btn ${pg === v ? 'active' : ''}" data-action="nav" data-view="${v}">${n}</button>`).join('')}</nav>`; }
+    function render() { if (PROJ) {
+        el('app').innerHTML = renderProj();
+        return;
+    } el('app').innerHTML = '<div class="app">' + head() + ({ play: renderPlay, feud: renderFeud, questions: renderQuestions, challenges: renderChallenges, teams: renderTeams, scores: renderScores, history: renderHistory, settings: renderSettings }[pg] || renderPlay)() + `<footer class="footer">FACUT CU 3 PIXELI SI MULTA INCREDERE &nbsp; | &nbsp; ${st.challenges.length} CHALLENGE-URI (${st.challenges.filter(c => c.active).length} active) &nbsp; | &nbsp; datele se salveaza pe aparatul asta.</footer></div>`; renderModal(); updateLiveTime(); }
     function renderPlay() { let r = st.round, c = r?.challenge || null; const next = st.schedule.mode === 'manual' ? 'MANUAL - nu apare singur' : st.nextAutoAt ? dateLabel(st.nextAutoAt) : 'dupa runda'; const s = st.schedule; return `<div class="row-heading"><div><h2 class="page-title">MASINA DE CHALLENGE-URI <span class="accent">!!</span></h2><p class="page-lead">Dai random, bagi timer, vedem cine mai este in picioare.</p></div><div class="schedule-badge">URMATORUL: ${escapeHtml(next)}</div></div><section class="dashboard"><aside class="panel"><h3 class="panel-title">CONTROL PANEL <span class="small-stamp">100% real</span></h3><label class="field-name" for="mode-quick">MOD DE APARITIE</label><select id="mode-quick" class="select" data-change="quick-mode"><option value="manual" ${s.mode === 'manual' ? 'selected' : ''}>Manual, il pornesc eu</option><option value="fixed" ${s.mode === 'fixed' ? 'selected' : ''}>Auto / interval fix</option><option value="random" ${s.mode === 'random' ? 'selected' : ''}>Auto / interval random</option></select>${s.mode !== 'manual' ? `<div class="hint-tape">Urmatorul challenge apare automat cat timp aplicatia sta deschisa. Pe PC ai si lansator separat.</div><button class="btn sm" data-action="nav" data-view="settings">MODIFICA INTERVALUL</button>` : `<div class="hint-tape">Este pe manual. Nu sare nimica pe ecran cand nu vrei tu. (probabil)</div>`}<hr class="rule"><div class="stat">CHALLENGE-URI DISPONIBILE <strong>${st.challenges.filter(c => c.active).length}</strong></div><div class="stat">ECHIPE INSCRISE <strong>${st.teams.length}</strong></div><div class="stat">RUNDE TERMINATE <strong>${st.history.length}</strong></div><hr class="rule"><label class="field-name" for="reward-quick">RECOMPENSA / PUNISH</label><select id="reward-quick" data-change="quick-reward" class="select">${['Double points', '1 hint gratis', 'Handicap pt cine iese', 'Doar gloria', 'Alt premiu decis pe loc'].map(x => `<option ${x === st.reward ? 'selected' : ''}>${escapeHtml(x)}</option>`).join('')}</select><p class="help">Premiul se trece in istoric dupa ce ai ales castigatorii. Castigatorii primesc ${pctRunda()} PCT; echipele iesite primesc 0.</p></aside><section class="panel big-panel"><div class="machine-label">${c ? '! CHALLENGE TRAS LA SORTI !' : '? CE PICA AZI ?'}</div><h3 class="challenge-name">${c ? escapeHtml(c.name) : 'APASA RANDOM ↓'}</h3><p class="challenge-desc">${c ? escapeHtml(c.description) : 'Nimica inca. Apasa butonul mare si calculatorul alege unu.'}</p><div class="info-chips">${c ? categoryChip(c) + difficultyChip(c) + timeChip(c) : '<span class="chip cat">10 IDEI DIN PDF</span><span class="chip easy">HAI LA JOC</span>'}</div><div class="timer-box ${r ? (r.expired ? 'done' : r.running ? 'live' : '') : ''}"><div class="timer-nums" id="timer-digits">${durationHuman(r ? r.remainingMs : 45000)}</div><div class="timer-label" id="timer-phase">${r ? (r.expired ? 'TIMPU S-A GATAT!!' : r.running ? 'SE JOACA ACUMA' : 'PAUZA / PREGATIRE') : 'CRONOMETRU IN ASTEPTARE'}</div><div class="progress"><div class="bar" id="timer-bar" style="width:${r ? (r.remainingMs / (r.duration * 1000) * 100).toFixed(1) : 100}%"></div></div></div>${r ? `<div class="buttons"><button class="btn ${r.running ? 'lav' : 'green'} row-btn" data-action="toggle-timer" ${r.expired ? 'disabled' : ''}>${r.running ? '❚❚ PAUZA' : '▶ ' + (r.remainingMs === r.duration * 1000 ? 'START' : 'CONTINUA')}</button><button class="btn blue" data-action="reset-timer">↺ RESET</button><button class="btn red" data-action="end-now">✓ FINALIZEAZA</button></div><div class="buttons"><button class="btn sm" data-action="cancel-round">X ANULEAZA RUNDA</button><button class="btn sm pink" data-action="open-results">ECHIPE / REZULTATE</button></div>` : `<button class="btn primary full" style="font-size:20px;min-height:67px;transform:rotate(-1deg)" data-action="random">🎲 DA-I RANDOM !!!</button><div class="buttons"><button class="btn sm blue" data-action="nav" data-view="challenges">ALEGE TU UN CHALLENGE</button></div>`}<div class="machine-bottom"><span class="scribble">↳ nu apasa de doua ori. sau da?</span><span class="counter">Runda #${st.history.length + 1}</span></div></section><aside class="panel"><h3 class="panel-title">ECHIPE IN JOC <span class="small-stamp">LIVE</span></h3>${st.teams.length ? st.teams.map(t => `<div class="team-mini"><div><b><span class="team-bullet" style="background:${COLORS[t.color] || COLORS.banana}"></span>${escapeHtml(t.name)}</b><small>${t.members.length} coechipieri</small><span class="chip score-chip">${t.score} PCT</span></div>${r ? statusButtons(t.id, r.statuses[t.id]) : '<span class="chip">PREGATIT</span>'}</div>`).join('') : '<div class="empty-mini">Nu avem echipe. Adauga una!</div>'}${r ? `<p class="help">Poti bifa RAMAS sau IESIT oricand. Dupa timer, confirmam final toti.</p><button class="btn sm full blue" data-action="open-results">VERIFICA TOATE ECHIPELE</button>` : `<button class="btn sm full green" data-action="team-add">+ BAGA O ECHIPA</button>`}<div class="sidebar-meta"><h3 class="panel-title">ULTIMA RUNDA</h3>${lastResult()}</div></aside></section>`; }
     function statusButtons(id, v) { return `<div class="status-buttons"><button type="button" class="yes ${v === 'in' ? 'sel' : ''}" data-action="set-status" data-team="${escapeHtml(id)}" data-status="in" aria-pressed="${v === 'in'}">RAMAS</button><button type="button" class="no ${v === 'out' ? 'sel' : ''}" data-action="set-status" data-team="${escapeHtml(id)}" data-status="out" aria-pressed="${v === 'out'}">IESIT</button></div>`; }
     function lastResult() { const h = st.history[0]; if (!h)
@@ -1246,8 +1973,209 @@ button:disabled {
         save();
         render();
     }
+    function newFeud(q, turn = null) { return { q, open: [], strikes: 0, x: 0, xs: 0, steal: false, done: false, paid: false, bank: 0, turn, owner: null, winner: null }; }
+    function newCup() { return { rounds: [], match: null, used: [], skip: [], show: 'board', per: 3, confirm: true }; }
+    function parseAnswers(txt) {
+        return String(txt || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+            const m = l.match(/^(.*?)[\s,;:=|-]*(\d{1,3})\s*(?:pct|p)?\.?$/i);
+            return m && m[1].trim() ? { text: m[1].trim().slice(0, 40), points: Number(m[2]) } : null;
+        });
+    }
+    function bracketFor(ids) {
+        let size = 2;
+        while (size < ids.length) size *= 2;
+        const byes = size - ids.length, mk = (a, b) => ({ id: uuid(), a, b, winner: null, qs: [], res: {} }), first = [];
+        for (let k = 0, i = 0; k < size / 2; k++) first.push(k < byes ? mk(ids[i++], null) : mk(ids[i++], ids[i++]));
+        const rounds = [first];
+        while (rounds.at(-1).length > 1) rounds.push(Array.from({ length: rounds.at(-1).length / 2 }, () => mk(null, null)));
+        return rounds;
+    }
+    function settle(R) {
+        R[0].forEach(m => { if (m.a && !m.b) m.winner = m.a; });
+        R.forEach((round, r) => R[r + 1] && round.forEach((m, k) => { R[r + 1][k >> 1][k % 2 ? 'b' : 'a'] = m.winner; }));
+    }
+    function allMatches() { return st.cup.rounds.flat(); }
+    function curMatch() { return allMatches().find(m => m.id === st.cup.match) || null; }
+    function roundOf(m) { return st.cup.rounds.findIndex(r => r.includes(m)); }
+    function roundName(r) { const n = st.cup.rounds.length - r; return n === 1 ? 'FINALA' : n === 2 ? 'SEMIFINALE' : n === 3 ? 'SFERTURI' : 'RUNDA ' + (r + 1); }
+    function teamName(id) { return st.teams.find(t => t.id === id)?.name || '?'; }
+    function teamColor(id) { return COLORS[st.teams.find(t => t.id === id)?.color] || COLORS.banana; }
+    function pts(m, id) { return Object.values(m.res).reduce((s, r) => s + (r.team === id ? nrScor(r.pts) : 0), 0); }
+    function feudQ() { return st.questions.find(q => q.id === st.feud.q) || null; }
+    function feudTurn() { const m = curMatch(), t = st.feud.turn; return m ? (t === m.a || t === m.b ? t : m.a) : null; }
+    function other(id) { const m = curMatch(); return id === m.a ? m.b : m.a; }
+    function pending() { const f = st.feud; return !!(f.q && f.done && f.winner && !f.paid); }
+    function feudEnd(id) { const f = st.feud; f.done = true; f.winner = id || null; if (id) f.turn = id; }
+    function cupNew() {
+        const ids = st.teams.map(t => t.id);
+        for (let i = ids.length - 1; i > 0; i--) { const j = rand(i + 1); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+        st.cup = { ...newCup(), per: st.cup.per, confirm: st.cup.confirm, rounds: ids.length > 1 ? bracketFor(ids) : [] };
+        if (st.cup.rounds.length) settle(st.cup.rounds);
+        st.feud = newFeud(null);
+        save(); render(); notify('Bracket nou, echipele au fost amestecate!');
+    }
+    function matchGo(id) {
+        const m = allMatches().find(x => x.id === id);
+        if (!m || !m.a || !m.b || m.winner) return;
+        st.cup.match = id;
+        st.cup.show = 'board';
+        st.feud = newFeud(null, m.a);
+        save(); render();
+    }
+    function matchLeave() {
+        if (pending()) return notify('Da intai punctele pentru intrebarea de pe tabla.');
+        st.cup.match = null;
+        st.feud = newFeud(null);
+        save(); render();
+    }
+    function loadQ(id) {
+        const m = curMatch(), f = st.feud;
+        if (!m || !st.questions.some(q => q.id === id)) return;
+        if (pending()) return notify('Da intai punctele pentru intrebarea de pe tabla.');
+        if (st.cup.used.includes(id)) return notify('Intrebarea asta a fost deja folosita.');
+        st.feud = newFeud(id, feudTurn());
+        st.cup.used.push(id);
+        m.qs.push(id);
+        st.cup.show = 'board';
+        save(); render();
+    }
+    function qSkip(id) {
+        const m = curMatch(), f = st.feud;
+        if (!st.cup.skip.includes(id)) st.cup.skip.push(id);
+        if (!st.cup.used.includes(id)) st.cup.used.push(id);
+        if (f.q !== id) return;
+        if (m && !f.paid) m.qs = m.qs.filter(x => x !== id);
+        armed = null;
+        st.feud = newFeud(null, feudTurn());
+    }
+    function loadRandom() {
+        const free = st.questions.filter(q => !st.cup.used.includes(q.id));
+        if (!free.length) return notify('Nu mai ai intrebari nefolosite. Adauga in INTREBARI.');
+        loadQ(free[rand(free.length)].id);
+    }
+    function feudOpen(i) {
+        const f = st.feud, q = feudQ();
+        if (!q || !curMatch() || !q.answers[i]) return;
+        if (f.open.includes(i)) return sound('duplicate');
+        f.open.push(i);
+        if (!f.done) {
+            f.bank += q.answers[i].points;
+            if (f.steal || f.open.length === q.answers.length) feudEnd(feudTurn());
+        }
+        sound('correct'); save(); render();
+    }
+    function feudPick(i) {
+        const f = st.feud, q = feudQ();
+        if (!q || !curMatch() || !q.answers[i]) return;
+        if (!st.cup.confirm || f.open.includes(i) || (armed && armed.q === f.q && armed.i === i)) {
+            armed = null;
+            return feudOpen(i);
+        }
+        armed = { q: f.q, i };
+        render();
+    }
+    function feudX() {
+        const f = st.feud;
+        armed = null;
+        if (!feudQ() || !curMatch() || f.done) return;
+        f.x++;
+        if (f.steal) {
+            f.xs = 1;
+            feudEnd(f.owner);
+        } else {
+            f.strikes++;
+            f.xs = f.strikes;
+            if (f.strikes >= 3) {
+                f.steal = true;
+                f.owner = feudTurn();
+                f.turn = other(f.owner);
+            }
+        }
+        sound('wrong'); save(); render();
+    }
+    function feudTurnSet(id) { const m = curMatch(), f = st.feud; if (!m || f.done || (id !== m.a && id !== m.b)) return; f.turn = id; save(); render(); }
+    function feudAward() {
+        const f = st.feud, m = curMatch();
+        if (!m || !pending()) return;
+        m.res[f.q] = { team: f.winner, pts: f.bank };
+        f.paid = true;
+        save(); render(); notify(teamName(f.winner) + ' +' + f.bank + ' PCT!');
+    }
+    function countUp(n, a, b) {
+        if (!n || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const t0 = performance.now(), step = now => { const k = Math.min(1, (now - t0) / 450); n.textContent = Math.round(a + (b - a) * (1 - (1 - k) ** 3)); if (k < 1) requestAnimationFrame(step); };
+        n.textContent = a;
+        requestAnimationFrame(step);
+    }
+    function bracketHtml(play) {
+        const R = st.cup.rounds, champ = R.at(-1)?.[0]?.winner;
+        return `<div class="bracket" style="--rounds:${R.length}">${R.map((round, r) => `<div class="b-round"><div class="b-title">${roundName(r)}</div><div class="b-col">${round.map(m => {
+            const live = m.id === st.cup.match, bye = r === 0 && !m.b;
+            const row = id => id ? `<div class="b-team ${m.winner && !bye ? (m.winner === id ? 'win' : 'out') : ''}" style="--c:${teamColor(id)}"><span>${escapeHtml(teamName(id))}</span>${m.a && m.b ? `<b>${pts(m, id)}</b>` : ''}</div>` : `<div class="b-team tbd">${bye ? 'BYE (trece direct)' : 'asteapta...'}</div>`;
+            return `<div class="b-match ${live ? 'live' : ''} ${bye ? 'bye' : ''}">${live ? '<span class="small-stamp">LIVE</span>' : ''}${row(m.a)}${row(m.b)}${play && m.a && m.b && !m.winner ? `<button type="button" class="btn sm green" data-action="match-go" data-id="${escapeHtml(m.id)}">▶ JOACA MECIUL</button>` : ''}</div>`;
+        }).join('')}</div></div>`).join('')}</div>${champ ? `<div class="champ">🏆 CAMPION: ${escapeHtml(teamName(champ))}</div>` : ''}`;
+    }
+    const projBtn = '<button type="button" class="btn lav" data-action="proj-open">📽 DESCHIDE PROIECTOR</button>';
+    function renderFeud() { return curMatch() ? renderConsole() : renderCup(); }
+    function renderCup() {
+        const c = st.cup, R = c.rounds, free = st.questions.filter(q => !c.used.includes(q.id)).length, left = R.flat().filter(m => !m.winner).length, need = left * c.per;
+        const inBracket = new Set(R[0]?.flatMap(m => [m.a, m.b]) || []), stale = R.length && (st.teams.some(t => !inBracket.has(t.id)) || [...inBracket].some(id => id && !st.teams.some(t => t.id === id)));
+        const body = st.teams.length < 2
+            ? '<div class="nothing"><div class="big">♣</div><p>Ai nevoie de minim 2 echipe pentru bracket.</p><button class="btn primary" data-action="nav" data-view="teams">ADAUGA ECHIPE</button></div>'
+            : R.length ? bracketHtml(true) : '<div class="nothing"><div class="big">🏆</div><p>Inca nu ai bracket. Il facem din echipele tale, amestecate.</p><button class="btn primary" data-action="cup-new">🔀 FA BRACKET-UL</button></div>';
+        return `<div class="row-heading"><div><h2 class="page-title">CE SPUN EESTEC-ERII? <span class="accent">🏆</span></h2><p class="page-lead">Bracket cu ${st.teams.length} echipe. Alegi meciul, joaca 2 echipe, castigatorul merge mai departe.</p></div><div class="buttons">${projBtn}<button class="btn blue" data-action="cup-new" ${st.teams.length < 2 ? 'disabled' : ''}>🔀 BRACKET NOU</button><button class="btn sm" data-action="nav" data-view="questions">✎ INTREBARI (${st.questions.length})</button></div></div><div class="panel cup-bar"><label class="field-name" for="cup-per">INTREBARI PE MECI</label><input class="field" id="cup-per" type="number" min="1" max="10" value="${c.per}" data-change="cup-per"><span class="chip ${free < need ? 'hard' : 'easy'}">${free} INTREBARI NEFOLOSITE · TREBUIE ~${need} (${left} MECIURI × ${c.per})</span></div>${stale ? '<p class="notice">Echipele s-au schimbat de cand ai facut bracket-ul. Apasa BRACKET NOU ca sa intre toate.</p>' : ''}${body}`;
+    }
+    function renderConsole() {
+        const m = curMatch(), f = st.feud, q = feudQ(), turn = feudTurn(), free = st.questions.filter(x => !st.cup.used.includes(x.id));
+        const team = id => { const on = id === turn; return `<button type="button" class="match-team ${on ? 'on' : ''}" style="--c:${teamColor(id)}" data-action="feud-turn" data-id="${escapeHtml(id)}" aria-pressed="${on}">${escapeHtml(teamName(id))}<b>${pts(m, id)} PCT</b>${on ? `<span class="small-stamp">${f.done ? '★ CASTIGA' : f.steal ? 'FURA!' : 'LA RAND'}</span>` : ''}</button>`; };
+        const board = !q ? '<div class="nothing"><div class="big">→</div><p>Alege o intrebare din dreapta. Pe proiector se vede acum ecranul cu cele 2 echipe.</p></div>'
+            : `<h3 class="c-q">${escapeHtml(q.text)}</h3><div class="c-bank"><span class="chip score-chip">PE TABLA: ${f.bank} PCT</span><div class="feud-strikes" aria-label="${f.strikes} X din 3">${[0, 1, 2].map(i => `<span class="strike ${i < f.strikes ? 'on' : ''}">X</span>`).join('')}</div></div><div class="c-answers">${q.answers.map((a, i) => { const open = f.open.includes(i), arm = !open && armed?.q === f.q && armed.i === i; return `<button type="button" class="c-ans ${open ? 'open' : ''} ${arm ? 'armed' : ''}" data-action="feud-pick" data-i="${i}"><span class="n">${i + 1}</span><span>${escapeHtml(a.text)}</span><span class="p">${arm ? `CONFIRMA? (CLICK / ${i + 1}) · ESC` : (open ? '✓ ' : '') + a.points}</span></button>`; }).join('')}</div><div class="buttons"><button type="button" class="btn red" data-action="feud-x" ${f.done ? 'disabled' : ''}>✕ GRESIT (X)</button><button type="button" class="btn blue" data-action="feud-reset">↺ RESET INTREBAREA</button><button type="button" class="btn ${st.cup.confirm ? 'green' : ''}" data-action="confirm-toggle" aria-pressed="${st.cup.confirm}">${st.cup.confirm ? '🔒 CONFIRMARE: PORNITA' : '🔓 CONFIRMARE: OPRITA'}</button></div>${f.done ? `<div class="feud-banner win"><span>★ ${escapeHtml(teamName(f.winner))} IA ${f.bank} PCT</span>${f.paid ? '<span class="chip score-chip">✓ PUNCTE DATE</span>' : `<button type="button" class="btn primary" data-action="feud-award">+${f.bank} PCT PENTRU ${escapeHtml(teamName(f.winner))}</button>`}</div>` : f.steal ? `<div class="feud-banner steal">FURT! ${escapeHtml(teamName(turn))} are o singura sansa</div>` : ''}`;
+        const list = st.questions.filter(x => !st.cup.skip.includes(x.id)).map(x => { const used = st.cup.used.includes(x.id), cur = x.id === f.q; return `<div class="c-item ${used ? 'used' : ''} ${cur ? 'cur' : ''}"><span>${escapeHtml(x.text)}</span><span class="c-acts">${cur ? '<span class="chip">PE TABLA</span>' : used ? '<span class="chip">✓ FOLOSITA</span>' : `<button type="button" class="btn sm green" data-action="q-load" data-id="${escapeHtml(x.id)}">PE TABLA</button>`}<button type="button" class="btn sm red" data-action="q-skip" data-id="${escapeHtml(x.id)}" aria-label="Scoate intrebarea din joc">X</button></span></div>`; }).join('');
+        const sa = pts(m, m.a), sb = pts(m, m.b), win = id => `<button type="button" class="btn ${(id === m.a ? sa > sb : sb > sa) ? 'primary' : ''}" data-action="match-win" data-id="${escapeHtml(id)}" ${pending() ? 'disabled' : ''}>★ ${escapeHtml(teamName(id))} CASTIGA MECIUL</button>`;
+        return `<div class="row-heading"><div><h2 class="page-title">${roundName(roundOf(m))}: ${escapeHtml(teamName(m.a))} <span class="accent">VS</span> ${escapeHtml(teamName(m.b))}</h2><p class="page-lead">Taste: 1-8 = raspuns bun${st.cup.confirm ? ' (apasa de 2 ori)' : ''}, X = gresit, ESC = anuleaza.</p></div><div class="buttons">${projBtn}<button class="btn blue" data-action="cup-show">📽 PE PROIECTOR: ${st.cup.show === 'bracket' ? 'BRACKET → ARATA TABLA' : 'TABLA → ARATA BRACKET'}</button><button class="btn sm" data-action="match-leave">← INAPOI LA BRACKET</button></div></div><div class="match-bar">${team(m.a)}<div class="match-mid">INTREBAREA<br><b>${m.qs.length} / ${st.cup.per}</b></div>${team(m.b)}</div><div class="console"><section class="panel">${board}</section><aside class="panel"><h3 class="panel-title">ALEGE INTREBAREA <span class="small-stamp">${free.length} LIBERE</span></h3><button type="button" class="btn primary full" data-action="q-random" ${free.length && !pending() ? '' : 'disabled'}>🎲 INTREBARE RANDOM NEFOLOSITA</button><div class="c-list">${list}</div><button type="button" class="btn sm full" data-action="nav" data-view="questions">✎ ADAUGA / EDITEAZA INTREBARI</button></aside></div><section class="panel match-end"><h3 class="panel-title">GATA MECIUL? ${m.qs.length >= st.cup.per ? '<span class="small-stamp">AU FOST TOATE INTREBARILE</span>' : ''}</h3><div class="buttons">${win(m.a)}${win(m.b)}</div><p class="help">${pending() ? 'Da intai punctele pentru intrebarea de pe tabla. ' : ''}Castigatorul merge mai departe in bracket. Nu se poate anula dupa confirmare.</p></section>`;
+    }
+    function renderProj() {
+        const m = curMatch(), q = feudQ(), show = !m || st.cup.show === 'bracket' ? 'bracket' : q ? 'board' : 'vs';
+        const key = show + (m?.id || '') + (q?.id || ''), enter = key !== projKey ? 'enter' : '';
+        projKey = key;
+        const tag = '<h2 class="feud-name">CE SPUN EESTEC-ERII?</h2>';
+        if (show === 'bracket') return `<div class="proj proj-bracket ${enter}"><div class="proj-head">${tag}<span class="proj-round">BRACKET</span></div>${st.cup.rounds.length ? bracketHtml(false) : '<div class="vs-round">Bracket-ul apare aici</div>'}</div>`;
+        if (show === 'vs') return `<div class="proj proj-vs ${enter}">${tag}<div class="vs-round">${roundName(roundOf(m))}</div><div class="vs-team a" style="--c:${teamColor(m.a)}">${escapeHtml(teamName(m.a))}</div><div class="vs-x">VS</div><div class="vs-team b" style="--c:${teamColor(m.b)}">${escapeHtml(teamName(m.b))}</div></div>`;
+        const f = st.feud, turn = feudTurn(), sa = pts(m, m.a), sb = pts(m, m.b);
+        const was = seen && seen.q === f.q ? seen : null, newX = !!was && f.x > was.x;
+        seen = { q: f.q, open: f.open.slice(), x: f.x, steal: f.steal, done: f.done, bank: f.bank, sa, sb };
+        if (was && was.bank !== f.bank) queueMicrotask(() => countUp(el('feud-bank'), was.bank, f.bank));
+        const slots = Array.from({ length: 8 }, (_, i) => {
+            const a = q.answers[i], num = `<span class="slot-num">${i + 1}</span>`;
+            if (!a) return `<div class="slot empty" style="--i:${i}"></div>`;
+            if (!f.open.includes(i)) return `<div class="slot" style="--i:${i}"><div class="slot-in"><div class="slot-face slot-front">${num}</div></div></div>`;
+            return `<div class="slot open ${was && !was.open.includes(i) ? 'new' : ''}" style="--i:${i}"><div class="slot-in"><div class="slot-face slot-front">${num}</div><div class="slot-face slot-back"><span class="slot-txt">${escapeHtml(a.text)}</span><span class="slot-pts">${a.points}</span></div></div></div>`;
+        }).join('');
+        const banner = f.done ? `<div class="feud-banner win ${was && !was.done ? 'new' : ''}">★ ${escapeHtml(teamName(f.winner))} IA ${f.bank} PCT!</div>`
+            : f.steal ? `<div class="feud-banner steal ${was && !was.steal ? 'new' : ''}">FURT! ${escapeHtml(teamName(turn))} are o singura sansa</div>` : '';
+        const team = (id, s, prev, side) => { const on = id === turn; return `<div class="proj-team ${side} ${on ? 'on' : ''}" style="--c:${teamColor(id)}"><span>${escapeHtml(teamName(id))}</span><b class="${was && prev !== s ? 'pop' : ''}">${s}</b>${on ? `<i class="small-stamp">${f.done ? '★' : f.steal ? 'FURA!' : 'LA RAND'}</i>` : ''}</div>`; };
+        const strikes = `<div class="feud-strikes">${[0, 1, 2].map(i => `<span class="strike ${i < f.strikes ? 'on' : ''} ${newX && f.xs === f.strikes && i === f.strikes - 1 ? 'new' : ''}">X</span>`).join('')}</div>`;
+        return `<div class="proj ${enter}"><div class="proj-head">${tag}<span class="proj-round">${roundName(roundOf(m))} · INTREBAREA ${m.qs.length}/${st.cup.per}</span></div><div class="proj-top">${team(m.a, sa, was?.sa, 'a')}<div class="feud-bank ${was && was.bank !== f.bank ? 'pop' : ''}" id="feud-bank">${f.bank}</div>${team(m.b, sb, was?.sb, 'b')}</div><h3 class="feud-q ${q.text.length > 80 ? 'long' : ''}">${escapeHtml(q.text)}</h3><div class="feud-board ${!was ? 'enter' : newX ? 'shake' : ''}">${slots}${newX ? `<div class="feud-x" aria-hidden="true">${'<span class="feud-x-box">X</span>'.repeat(f.xs)}</div>` : ''}</div><div class="feud-status">${strikes}${banner}</div></div>`;
+    }
+    function renderQuestions() { return `<div class="row-heading"><div><h2 class="page-title">INTREBARI: CE SPUN EESTEC-ERII?</h2><p class="page-lead">${st.questions.length} intrebari, ${st.questions.filter(q => !st.cup.used.includes(q.id)).length} nefolosite in bracket-ul curent. Fiecare are 7 sau 8 raspunsuri care fac impreuna fix 100 PCT.</p></div><div class="buttons"><button class="btn primary" data-action="question-add">+ INTREBARE NOUA</button><button class="btn sm blue" data-action="reset-questions">↺ INTREBARILE DE START</button><button class="btn sm blue" data-action="nav" data-view="feud">▶ INAPOI LA JOC</button></div></div>${st.questions.length ? `<div class="list-grid">${st.questions.map((q, i) => `<article class="card item-card ${st.cup.used.includes(q.id) ? 'is-off' : ''}"><div class="item-top"><div class="eyebrow">#${String(i + 1).padStart(2, '0')} ${q.id === st.feud.q ? '● PE TABLA' : st.cup.skip.includes(q.id) ? '✕ SCOASA DIN JOC' : st.cup.used.includes(q.id) ? '✓ FOLOSITA' : ''}</div><span class="chip time">${q.answers.length} RASPUNSURI</span></div><h3>${escapeHtml(q.text)}</h3><p>${q.answers.map(a => `${escapeHtml(a.text)} <b>${a.points}</b>`).join(' · ')}</p><div class="row-actions"><button class="btn sm blue" data-action="question-edit" data-id="${escapeHtml(q.id)}">✎ EDIT</button><button class="btn sm red" data-action="question-delete" data-id="${escapeHtml(q.id)}" aria-label="Sterge intrebarea">X</button></div></article>`).join('')}</div>` : '<div class="nothing"><div class="big">?</div><p>Nu ai intrebari. Adauga prima.</p><button class="btn primary" data-action="question-add">+ INTREBARE NOUA</button></div>'}`; }
+    function saveQuestion(fd) {
+        const id = String(fd.get('id') || ''), text = String(fd.get('text') || '').trim().slice(0, 160), ans = parseAnswers(fd.get('answers'));
+        if (!text) return notify('Scrie intrebarea.');
+        const bad = ans.indexOf(null);
+        if (bad >= 0) return notify('Randul ' + (bad + 1) + ' nu are puncte la final. Ex: Vin 20');
+        if (ans.length < 7 || ans.length > 8) return notify('Trebuie 7 sau 8 raspunsuri. Acum ai ' + ans.length + '.');
+        if (ans.some(a => a.points < 1)) return notify('Fiecare raspuns are minim 1 punct.');
+        const sum = ans.reduce((s, a) => s + a.points, 0);
+        if (sum !== 100) return notify('Punctele fac ' + sum + ', trebuie fix 100.');
+        const q = { id: id || uuid(), text, answers: ans.sort((a, b) => b.points - a.points) };
+        const i = st.questions.findIndex(x => x.id === id);
+        if (i < 0) st.questions.push(q);
+        else st.questions[i] = q;
+        if (st.feud.q === q.id) st.feud = newFeud(q.id, st.feud.turn);
+        const ok = save(); closeModal(); render(); notify(ok ? 'Intrebare salvata!' : 'Intrebarea e doar temporara! Deschide aplicatia prin HTTPS pentru salvare.');
+    }
     function renderHistory() { return `<div class="row-heading"><div><h2 class="page-title">CINE O CASTIGAT ?</h2><p class="page-lead">Arhiva cu toate rundele finalizate. Castigatorii si eliminatii raman aici.</p></div><div class="buttons"><button class="btn blue" data-action="backup-export">↓ SALVEAZA JSON</button><button class="btn sm red" data-action="history-clear">STERGE ISTORICU</button></div></div>${st.history.length ? `<div class="history-list">${st.history.map((h, i) => `<article class="card history-card"><div class="history-header"><div><div class="eyebrow">RUNDA #${st.history.length - i} • ${escapeHtml(dateLabel(h.endedAt))} • ${h.duration} SEC</div><h3 class="history-title">${escapeHtml(h.name)}</h3></div><span class="chip ${h.difficulty === 'hard' ? 'hard' : 'easy'}">${h.difficulty === 'hard' ? 'GREU' : 'USOR'}</span></div><div class="winner">★ A RAMAS: ${h.winners.length ? escapeHtml(h.winners.join(' + ')) : 'NIMENI'}</div><p>${h.losers?.length ? `<span class="loss">IESITI: ${escapeHtml(h.losers.join(', '))}</span>` : 'Nici o echipa n-o iesit.'}</p><p class="help">PREMIU: ${escapeHtml(h.reward || 'Doar gloria')}</p>${h.points != null ? `<div class="chip score-chip">+${nrScor(h.points)} PCT / CASTIGATOR</div>` : ''}</article>`).join('')}</div>` : '<div class="nothing"><div class="big">📜</div><p>N-ai rezultate. Hai la prima runda!</p><button class="btn primary" data-action="nav" data-view="play">JOACA ACUM</button></div>'}`; }
-    function renderSettings() { const s = st.schedule; return `<div class="row-heading"><div><h2 class="page-title">SETARI (NU STRICA)</h2><p class="page-lead">Automatic, manual, interval random, sunet si backup. Ce vrei tu.</p></div></div><div class="settings-grid"><section class="panel"><h3 class="panel-title">CAND SA APARA ?</h3><form id="settings-form" class="form-stack" action="javascript:void(0)" onsubmit="return false"><div><label class="field-name" for="settings-mode">MODUL DE RULARE</label><select class="select" id="settings-mode" name="mode"><option value="manual" ${s.mode === 'manual' ? 'selected' : ''}>Manual - doar cand apas</option><option value="fixed" ${s.mode === 'fixed' ? 'selected' : ''}>Auto - la interval fix</option><option value="random" ${s.mode === 'random' ? 'selected' : ''}>Auto - intervale random</option></select></div><div><label class="field-name" for="fixed">INTERVAL FIX (minute)</label><input class="field" name="fixed" id="fixed" type="number" min="1" max="1440" value="${s.fixed}" required></div><div class="inline-fields"><div><label class="field-name" for="min">MIN RANDOM (min)</label><input class="field" id="min" name="min" type="number" min="1" max="1440" value="${s.min}" required></div><div><label class="field-name" for="max">MAX RANDOM (min)</label><input class="field" id="max" name="max" type="number" min="1" max="1440" value="${s.max}" required></div></div><div><label class="field-name" for="points">PUNCTE / CASTIGATOR</label><input class="field" id="points" name="points" type="number" min="1" max="1000" step="1" value="${st.points}" required><div class="help">Double points dubleaza acest punctaj. Modificarile se aplica rundelor viitoare finalizate.</div></div><label class="toggle-line"><input name="sound" type="checkbox" ${st.sound ? 'checked' : ''}> Sunet cand expira cronometrul</label><button class="btn primary" type="button" data-action="save-settings">SALVEAZA MODIFICARILE</button></form><div class="notice">ATENTIE! Programarea din browser functioneaza cat timp pagina sta deschisa. Pentru aparitii pe PC cand nu este deschisa, foloseste lansatorul AUTOMAT din pachetul Windows.</div></section><section class="panel"><h3 class="panel-title">BACKUP SI ALTCEVA</h3><p class="modal-info">Aplicatia isi salveaza automat echipele, challenge-urile si istoricul local pe dispozitivul folosit. Nu e cont online, deci alte telefoane nu se sincronizeaza singure.</p><div class="buttons"><button class="btn green" data-action="backup-export">↓ EXPORT DATE .JSON</button><button class="btn blue" data-action="backup-import">↑ IMPORT DATE .JSON</button></div><hr class="rule"><h3 class="panel-title">INFORMARE IMPORTANTA!</h3><p class="modal-info">Challenge-urile din PDF: 10 total, 8 verzi si 2 rosii. Durata sugerata: intre 30 si 60 de secunde. Premiile pot fi hint-uri, double points sau handicap.</p><div class="hint-tape">Daca stergi datele, chiar se sterg. Nu este un buton de undo magic.</div><div class="buttons"><button class="btn red" data-action="factory-reset">RESET TOATA APLICATIA</button></div><p class="help">Versiune web: HTML local, merge offline. Pe telefon este responsive; pentru instalare ca PWA, publica fisierle pe HTTPS.</p></section></div>`; }
+    function renderSettings() { const s = st.schedule; return `<div class="row-heading"><div><h2 class="page-title">SETARI (NU STRICA)</h2><p class="page-lead">Automatic, manual, interval random, sunet si backup. Ce vrei tu.</p></div></div><div class="settings-grid"><section class="panel"><h3 class="panel-title">CAND SA APARA ?</h3><form id="settings-form" class="form-stack" action="javascript:void(0)" onsubmit="return false"><div><label class="field-name" for="settings-mode">MODUL DE RULARE</label><select class="select" id="settings-mode" name="mode"><option value="manual" ${s.mode === 'manual' ? 'selected' : ''}>Manual - doar cand apas</option><option value="fixed" ${s.mode === 'fixed' ? 'selected' : ''}>Auto - la interval fix</option><option value="random" ${s.mode === 'random' ? 'selected' : ''}>Auto - intervale random</option></select></div><div><label class="field-name" for="fixed">INTERVAL FIX (minute)</label><input class="field" name="fixed" id="fixed" type="number" min="1" max="1440" value="${s.fixed}" required></div><div class="inline-fields"><div><label class="field-name" for="min">MIN RANDOM (min)</label><input class="field" id="min" name="min" type="number" min="1" max="1440" value="${s.min}" required></div><div><label class="field-name" for="max">MAX RANDOM (min)</label><input class="field" id="max" name="max" type="number" min="1" max="1440" value="${s.max}" required></div></div><div><label class="field-name" for="points">PUNCTE / CASTIGATOR</label><input class="field" id="points" name="points" type="number" min="1" max="1000" step="1" value="${st.points}" required><div class="help">Double points dubleaza acest punctaj. Modificarile se aplica rundelor viitoare finalizate.</div></div><label class="toggle-line"><input name="sound" type="checkbox" ${st.sound ? 'checked' : ''}> Sunete (cronometru + Ce spun EESTEC-erii?)</label><button class="btn primary" type="button" data-action="save-settings">SALVEAZA MODIFICARILE</button></form><div class="notice">ATENTIE! Programarea din browser functioneaza cat timp pagina sta deschisa. Pentru aparitii pe PC cand nu este deschisa, foloseste lansatorul AUTOMAT din pachetul Windows.</div></section><section class="panel"><h3 class="panel-title">BACKUP SI ALTCEVA</h3><p class="modal-info">Aplicatia isi salveaza automat echipele, challenge-urile si istoricul local pe dispozitivul folosit. Nu e cont online, deci alte telefoane nu se sincronizeaza singure.</p><div class="buttons"><button class="btn green" data-action="backup-export">↓ EXPORT DATE .JSON</button><button class="btn blue" data-action="backup-import">↑ IMPORT DATE .JSON</button></div><hr class="rule"><h3 class="panel-title">INFORMARE IMPORTANTA!</h3><p class="modal-info">Challenge-urile din PDF: 10 total, 8 verzi si 2 rosii. Durata sugerata: intre 30 si 60 de secunde. Premiile pot fi hint-uri, double points sau handicap.</p><div class="hint-tape">Daca stergi datele, chiar se sterg. Nu este un buton de undo magic.</div><div class="buttons"><button class="btn red" data-action="factory-reset">RESET TOATA APLICATIA</button></div><p class="help">Versiune web: HTML local, merge offline. Pe telefon este responsive; pentru instalare ca PWA, publica fisierle pe HTTPS.</p></section></div>`; }
     function renderModal() {
         const root = el('modal-root');
         if (!mod) {
@@ -1262,6 +2190,10 @@ button:disabled {
         if (mod.type === 'team') {
             const t = st.teams.find(x => x.id === mod.id), isEdit = !!t;
             html = `<div class="dialog-head"><h2 class="dialog-title">${isEdit ? 'EDITAM ECHIPA' : 'ECHIPA NOUA'} ♣</h2><button class="close-x" data-action="modal-close">X</button></div><form id="team-form" class="form-stack" action="javascript:void(0)" onsubmit="return false"><input name="id" type="hidden" value="${escapeHtml(t?.id || '')}"><div><label class="field-name">NUME ECHIPA</label><input class="field" name="name" required maxlength="70" placeholder="Ex: Echipa Papuc" value="${escapeHtml(t?.name || '')}"></div><div><label class="field-name">COECHIPIERI (UNU PE RAND SAU CU VIRGULA)</label><textarea class="area" name="members" placeholder="Ana&#10;Vlad&#10;Gigi">${escapeHtml(t?.members.join('\n') || '')}</textarea></div><div><label class="field-name">CULOARE STUPIDA DAR FRUMOASA</label><select class="select" name="color">${Object.keys(COLORS).map(x => `<option value="${x}" ${t?.color === x ? 'selected' : ''}>${x.toUpperCase()}</option>`).join('')}</select></div><div><label class="field-name" for="team-score">SCOR TOTAL (PCT)</label><input class="field" id="team-score" name="score" type="number" min="0" max="999999999" step="1" value="${nrScor(t?.score)}" required></div><div class="form-actions"><button type="button" class="btn" data-action="modal-close">RENUNTA</button><button type="button" class="btn primary" data-action="save-team">SALVEAZA ECHIPA</button></div></form>`;
+        }
+        if (mod.type === 'question') {
+            const q = st.questions.find(x => x.id === mod.id);
+            html = `<div class="dialog-head"><h2 class="dialog-title">${q ? 'EDIT INTREBARE' : 'INTREBARE NOUA'} ?!</h2><button class="close-x" data-action="modal-close" aria-label="Inchide">X</button></div><form id="question-form" class="form-stack" action="javascript:void(0)" onsubmit="return false"><input name="id" type="hidden" value="${escapeHtml(q?.id || '')}"><div><label class="field-name" for="q-text">INTREBAREA</label><textarea class="area" id="q-text" name="text" maxlength="160" required placeholder="Ex: Numeste o bautura de la petrecere">${escapeHtml(q?.text || '')}</textarea></div><div><label class="field-name" for="q-answers">RASPUNSURI + PUNCTE (UNUL PE RAND)</label><textarea class="area" id="q-answers" name="answers" rows="9" required placeholder="Bere 32&#10;Vin 20&#10;Suc 14">${escapeHtml(q ? q.answers.map(a => a.text + ' ' + a.points).join('\n') : '')}</textarea><div class="help">7 sau 8 raspunsuri, cu punctele la final de rand. Totalul trebuie sa fie fix 100. Le ordonam noi dupa puncte.</div></div><div class="form-actions"><button type="button" class="btn" data-action="modal-close">RENUNTA</button><button type="button" class="btn primary" data-action="save-question">SALVEAZA</button></div></form>`;
         }
         if (mod.type === 'results') {
             const r = st.round;
@@ -1383,6 +2315,28 @@ button:disabled {
         st.teams = st.teams.filter(t => t.id !== id);
         if (st.round)
             delete st.round.statuses[id];
+    } if (kind === 'question-delete') {
+        st.questions = st.questions.filter(q => q.id !== id);
+        if (st.feud.q === id)
+            st.feud = newFeud(null, st.feud.turn);
+    } if (kind === 'match-win') {
+        const m = curMatch();
+        if (m && !pending() && (id === m.a || id === m.b)) {
+            m.winner = id;
+            settle(st.cup.rounds);
+            st.cup.match = null;
+            st.cup.show = 'bracket';
+            st.feud = newFeud(null);
+        }
+    } if (kind === 'cup-new') {
+        closeModal();
+        return cupNew();
+    } if (kind === 'q-skip')
+        qSkip(id); if (kind === 'reset-questions') {
+        st.questions = structuredCloneSafe(intrebari);
+        st.cup.used = [];
+        st.cup.skip = [];
+        st.feud = newFeud(null, st.feud.turn);
     } if (kind === 'scores-reset') st.teams.forEach(t => t.score = 0);
     if (kind === 'history-clear')
         st.history = []; if (kind === 'cancel-round') {
@@ -1421,8 +2375,10 @@ button:disabled {
     else if (id === 'challenge-form')
         saveChallenge(fd);
     else if (id === 'settings-form')
-        saveSettings(fd); }
-    const actions = { 'score-plus': b => modificaScor(b.dataset.id, 1), 'score-minus': b => modificaScor(b.dataset.id, -1), 'scores-reset': () => confirmAction('scores-reset', null, 'Resetam toate scorurile la 0? Istoricul rundelor ramane.'), 'save-team': () => saveFormById('team-form'), 'save-challenge': () => saveFormById('challenge-form'), 'save-settings': () => saveFormById('settings-form'), nav: b => { pg = b.dataset.view || 'play'; closeModal(); render(); }, fullscreen: () => { if (!document.fullscreenElement)
+        saveSettings(fd);
+    else if (id === 'question-form')
+        saveQuestion(fd); }
+    const actions = { 'feud-pick': b => feudPick(Number(b.dataset.i)), 'confirm-toggle': () => { st.cup.confirm = !st.cup.confirm; armed = null; save(); render(); }, 'feud-x': feudX, 'feud-reset': () => { armed = null; if (st.feud.q) { st.feud = newFeud(st.feud.q, feudTurn()); save(); render(); } }, 'feud-turn': b => feudTurnSet(b.dataset.id), 'feud-award': feudAward, 'match-go': b => matchGo(b.dataset.id), 'match-leave': matchLeave, 'match-win': b => pending() ? notify('Da intai punctele pentru intrebarea de pe tabla.') : confirmAction('match-win', b.dataset.id, 'Confirmi ca ' + teamName(b.dataset.id) + ' castiga meciul? Merge mai departe in bracket si nu se mai poate anula.'), 'cup-new': () => st.cup.rounds.length ? confirmAction('cup-new', null, 'Facem bracket nou? Rezultatele meciurilor si lista de intrebari folosite se sterg.') : cupNew(), 'cup-show': () => { st.cup.show = st.cup.show === 'bracket' ? 'board' : 'bracket'; save(); render(); }, 'proj-open': () => { if (!window.open(location.href.split(/[?#]/)[0] + '#proiector', 'eestec-proiector', 'popup,width=1280,height=720')) notify('Browserul a blocat fereastra. Permite pop-up-uri pentru pagina asta.'); }, 'q-load': b => loadQ(b.dataset.id), 'q-random': loadRandom, 'q-skip': b => confirmAction('q-skip', b.dataset.id, 'Scoatem intrebarea din joc? Nu mai apare in lista si nu mai poate fi aleasa, nici la random.' + (b.dataset.id === st.feud.q ? ' Dispare si de pe tabla.' : '')), 'reset-questions': () => confirmAction('reset-questions', null, 'Lista ta de intrebari se inlocuieste cu intrebarile de start (8 copii de "Ce bere beau EESTECeri cel mai mult?"). Lista de intrebari folosite se goleste si tabla se elibereaza.'), 'question-add': () => showModal('question'), 'question-edit': b => showModal('question', { id: b.dataset.id }), 'question-delete': b => confirmAction('question-delete', b.dataset.id, 'Stergem intrebarea? Dispare si de pe tabla.'), 'save-question': () => saveFormById('question-form'), 'score-plus': b => modificaScor(b.dataset.id, 1), 'score-minus': b => modificaScor(b.dataset.id, -1), 'scores-reset': () => confirmAction('scores-reset', null, 'Resetam toate scorurile la 0? Istoricul rundelor ramane.'), 'save-team': () => saveFormById('team-form'), 'save-challenge': () => saveFormById('challenge-form'), 'save-settings': () => saveFormById('settings-form'), nav: b => { pg = b.dataset.view || 'play'; closeModal(); render(); }, fullscreen: () => { if (!document.fullscreenElement)
             document.documentElement.requestFullscreen?.();
         else
             document.exitFullscreen?.(); }, random: () => launchChallenge(), 'select-challenge': b => launchChallenge(b.dataset.id), 'challenge-add': () => showModal('challenge'), 'challenge-edit': b => showModal('challenge', { id: b.dataset.id }), 'challenge-toggle': b => { const c = st.challenges.find(x => x.id === b.dataset.id); if (c) {
@@ -1432,7 +2388,11 @@ button:disabled {
             render();
         } }, 'challenge-delete': b => confirmAction('challenge-delete', b.dataset.id, 'Stergem challenge-ul? Nu mai apare la random.'), 'reset-challenges': () => confirmAction('reset-challenges', null, 'Lista ta va fi inlocuita cu cele 10 challenge-uri originale din PDF.'), 'team-add': () => showModal('team'), 'team-edit': b => showModal('team', { id: b.dataset.id }), 'team-delete': b => confirmAction('team-delete', b.dataset.id, 'Stergem echipa asta? Nu mai poate participa in rundele viitoare.'), 'toggle-timer': toggleTime, 'reset-timer': resetTime, 'end-now': () => expireTime(true), 'open-results': () => { if (st.round)
             showModal('results'); }, 'set-status': b => setStatus(b.dataset.team, b.dataset.status), 'finalize-round': finalize, 'cancel-round': () => confirmAction('cancel-round', null, 'Anulezi runda? Rezultatele nu o sa fie salvate.'), 'modal-close': closeModal, 'confirm-yes': handleConfirm, 'backup-export': exportBackup, 'backup-import': () => showModal('import'), 'history-clear': () => confirmAction('history-clear', null, 'Stergem TOT istoricul de runde? Scorurile echipelor raman.'), 'factory-reset': () => confirmAction('factory-reset', null, 'Toate echipele, challenge-urile, setarile si istoricul vor fi resetate!') };
-    document.addEventListener('click', e => { const b = e.target.closest('[data-action]'); if (b) {
+    document.addEventListener('click', e => { if (PROJ) {
+        if (!document.fullscreenElement)
+            document.documentElement.requestFullscreen?.().catch(() => { });
+        return;
+    } const b = e.target.closest('[data-action]'); if (b) {
         e.preventDefault();
         const fn = actions[b.dataset.action];
         if (fn)
@@ -1440,9 +2400,13 @@ button:disabled {
     }
     else if (e.target.matches('[data-overlay]'))
         closeModal(); });
-    document.addEventListener('submit', e => { const f = e.target; if (!['challenge-form', 'team-form', 'settings-form'].includes(f.id))
+    document.addEventListener('submit', e => { const f = e.target; if (!['challenge-form', 'team-form', 'settings-form', 'question-form'].includes(f.id))
         return; e.preventDefault(); e.stopPropagation(); saveFormById(f.id); }, true);
-    document.addEventListener('change', async (e) => { const t = e.target; if (t.dataset.change === 'quick-mode') {
+    document.addEventListener('change', async (e) => { const t = e.target; if (t.dataset.change === 'cup-per') {
+        st.cup.per = Math.max(1, Math.min(10, Math.floor(Number(t.value)) || 3));
+        save();
+        render();
+    } if (t.dataset.change === 'quick-mode') {
         st.schedule.mode = t.value;
         scheduleNext();
         render();
@@ -1474,36 +2438,62 @@ button:disabled {
         }
     } });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && mod)
-        closeModal(); if (e.key === ' ' && pg === 'play' && !mod && st.round && e.target === document.body) {
+        closeModal();
+    else if (e.key === 'Escape' && armed) {
+        armed = null;
+        render();
+    } if (e.key === ' ' && pg === 'play' && !mod && st.round && e.target === document.body) {
         e.preventDefault();
         toggleTime();
+    } if (pg === 'feud' && !mod && !e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey && !e.target.closest('input,textarea,select')) {
+        if (/^[1-8]$/.test(e.key)) {
+            e.preventDefault();
+            feudPick(Number(e.key) - 1);
+        }
+        else if (e.key === 'x' || e.key === 'X') {
+            e.preventDefault();
+            feudX();
+        }
     } });
     window.addEventListener('storage', e => { if (e.key === KEY && e.newValue) {
         st = readState();
         render();
     } });
-    if (st.round?.running && Date.now() >= st.round.endsAt) {
-        st.round.remainingMs = 0;
-        st.round.running = false;
-        st.round.expired = true;
-        st.round.endsAt = null;
-        save();
-        setTimeout(() => showModal('results'), 40);
+    console.assert(intrebari.every(q => q.answers.length >= 7 && q.answers.length <= 8 && q.answers.reduce((s, a) => s + a.points, 0) === 100), 'seed questions must have 7-8 answers summing to 100');
+    console.assert(JSON.stringify(parseAnswers('Vin 20\n Salata de boeuf, 8 \nFormula 1 - 12\nfara puncte')) === JSON.stringify([{ text: 'Vin', points: 20 }, { text: 'Salata de boeuf', points: 8 }, { text: 'Formula 1', points: 12 }, null]), 'parseAnswers');
+    for (let n = 2; n <= 9; n++) {
+        const R = bracketFor(Array.from({ length: n }, (_, i) => 't' + i)), first = R[0].flatMap(m => [m.a, m.b]).filter(Boolean);
+        settle(R);
+        console.assert(first.length === n && new Set(first).size === n && R[0].every(m => m.a) && R.flat().length - R[0].filter(m => !m.b).length === n - 1 && R.slice(1).flat().every(m => !m.winner), 'bracket for ' + n + ' teams');
     }
-    if (st.schedule.mode !== 'manual' && !st.nextAutoAt && !st.round)
-        scheduleNext();
-    render();
-    setInterval(tick, 190);
-    if (new URLSearchParams(location.search).has('pop'))
-        setTimeout(() => { if (!st.round)
-            launchChallenge(null, true);
-        else {
-            pg = 'play';
-            render();
-            notify('Exista deja un challenge!');
-        } }, 180);
-    if ('serviceWorker' in navigator && location.protocol.startsWith('http'))
-        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => { }));
+    if (PROJ) {
+        document.body.classList.add('proj-body');
+        document.body.insertAdjacentHTML('beforeend', '<div class="proj-hint">click oriunde = ecran complet</div>');
+        render();
+    } else {
+        if (st.round?.running && Date.now() >= st.round.endsAt) {
+            st.round.remainingMs = 0;
+            st.round.running = false;
+            st.round.expired = true;
+            st.round.endsAt = null;
+            save();
+            setTimeout(() => showModal('results'), 40);
+        }
+        if (st.schedule.mode !== 'manual' && !st.nextAutoAt && !st.round)
+            scheduleNext();
+        render();
+        setInterval(tick, 190);
+        if (new URLSearchParams(location.search).has('pop'))
+            setTimeout(() => { if (!st.round)
+                launchChallenge(null, true);
+            else {
+                pg = 'play';
+                render();
+                notify('Exista deja un challenge!');
+            } }, 180);
+        if ('serviceWorker' in navigator && location.protocol.startsWith('http'))
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => { }));
+    }
 })();
 </script>
 </body>

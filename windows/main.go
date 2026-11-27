@@ -42,7 +42,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Cannot create application folder:", err)
 		return
 	}
-	for _, n := range []string{"index.html", "manifest.webmanifest", "sw.js", "icon-192.png", "icon-512.png"} {
+	for _, n := range []string{"index.html", "manifest.webmanifest", "sw.js", "icon-192.png", "icon-512.png", "feud-correct.mp3", "feud-wrong.mp3", "feud-duplicate.mp3"} {
 		if err := os.WriteFile(filepath.Join(dir, n), []byte(files[n]), 0644); err != nil {
 			return
 		}

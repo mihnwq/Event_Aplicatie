@@ -10,7 +10,7 @@ import (
 func main() {
 	var s strings.Builder
 	s.WriteString("package main\n\nvar files = map[string]string{\n")
-	for _, n := range []string{"index.html", "manifest.webmanifest", "sw.js", "icon-192.png", "icon-512.png"} {
+	for _, n := range []string{"index.html", "manifest.webmanifest", "sw.js", "icon-192.png", "icon-512.png", "feud-correct.mp3", "feud-wrong.mp3", "feud-duplicate.mp3"} {
 		a, err := os.ReadFile(filepath.Join("web", n))
 		if err != nil {
 			panic(err)
