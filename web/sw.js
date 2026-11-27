@@ -1,5 +1,5 @@
-const cache = 'side-challenge-3000-v5-score';
-const files = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const cache = 'side-challenge-3000-v8-bracket';
+const files = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './feud-correct.mp3', './feud-wrong.mp3', './feud-duplicate.mp3'];
 
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(cache).then(c => c.addAll(files)));
